@@ -1,4 +1,4 @@
-.PHONY: setup data run
+.PHONY: setup data run test
 
 setup:
 	uv sync
@@ -12,3 +12,9 @@ run:
 		--session_service_uri memory:// \
 		--artifact_service_uri memory:// \
 		hr_agent
+
+# Lint + unit tests, no API key needed.
+test:
+	uv run ruff check .
+	uv run ruff format --check .
+	uv run pytest
