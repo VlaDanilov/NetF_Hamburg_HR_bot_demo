@@ -2,8 +2,10 @@
 
 import asyncio
 import re
+from pathlib import Path
 
 import pytest
+import yaml
 from pypdf import PdfWriter
 
 from hr_agent.context import format_pages, load_pages
@@ -70,6 +72,23 @@ def test_instruction_has_rules_before_fenced_documents(pages):
     assert instruction.rstrip().endswith("</dokumente>")
     for p in pages:
         assert f"[{p.document}, Seite {p.number}]" in instruction
+
+
+def test_eval_cases_match_the_documents(pages):
+    # Keeps questions.yaml and the PDFs in sync: expected facts are on their pages,
+    # refusal topics are really absent.
+    cases = yaml.safe_load((Path(__file__).parent / "eval" / "questions.yaml").read_text())
+    by_page = {(p.document, p.number): p.text for p in pages}
+    for case in cases:
+        if case["type"] == "answer":
+            source = case["expected_source"]
+            text = by_page[(source["document"], source["page"])]
+            for item in case["must_contain"]:
+                alternatives = item if isinstance(item, list) else [item]
+                assert any(a in text for a in alternatives), (case["id"], item)
+    all_text = " ".join(by_page.values()).lower()
+    assert "elternzeit" not in all_text
+    assert "betriebsrente" not in all_text
 
 
 def test_curly_braces_in_documents_reach_the_model_unchanged():
