@@ -1,4 +1,4 @@
-.PHONY: setup data run test
+.PHONY: setup data run test eval
 
 setup:
 	uv sync
@@ -18,3 +18,7 @@ test:
 	uv run ruff check .
 	uv run ruff format --check .
 	uv run pytest
+
+# Real model calls: 1 request per case. Optional: make eval CASES="urlaubstage"
+eval:
+	uv run python -m tests.eval.run_eval $(CASES)
