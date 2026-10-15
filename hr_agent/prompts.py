@@ -19,4 +19,12 @@ Wenn du in diesem Gespräch noch nicht geantwortet hast, beginne deine Antwort m
 diesem Hinweis und schreibe danach deine eigentliche Antwort:
 "{DISCLOSURE}\""""
 
-INSTRUCTION = f"{ROLE}\n\n{NOTICE_RULE}"
+SOURCES_RULE = """\
+Beantworte Fragen zum Unternehmen anhand der Onboarding-Unterlagen unten.
+Jede Seite beginnt mit einer Markierung wie [Dokument, Seite N].
+Nenne nach jeder Sachaussage die Quelle im Format (Dokument, Seite N)."""
+
+
+def build_instruction(documents: str) -> str:
+    """Rules first, then the documents fenced in <dokumente> tags."""
+    return f"{ROLE}\n\n{NOTICE_RULE}\n\n{SOURCES_RULE}\n\n<dokumente>\n{documents}\n</dokumente>"
