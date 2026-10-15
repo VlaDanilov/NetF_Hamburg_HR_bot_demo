@@ -1,0 +1,19 @@
+# Secrets: the API key lives only in .env, never in git.
+.env
+
+# ADK dev UI local storage (sessions.db, artifacts). We run `adk web` with
+# in-memory storage, this is a safety net in case someone starts it without the flag.
+.adk/
+
+# Topic log from story AS1: runtime data, never committed.
+data/topics.jsonl
+
+# Python / tooling
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# macOS
+.DS_Store
